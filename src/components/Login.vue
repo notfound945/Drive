@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { post } from 'src/axios/api.js'
+import request from 'src/axios/request'
 import _ from 'lodash'
 export default {
   name: 'Login',
@@ -78,7 +78,7 @@ export default {
       }
       // const res = await post('/drive/login', params)
       // const res = await this.$axios.post(
-      const res = await post(
+      const res = await request.post(
         '/login',
         params).then(result => {
         bar.stop()

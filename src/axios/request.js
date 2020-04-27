@@ -1,5 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
+import { Notify } from 'quasar'
+import _ from 'lodash'
 
 // if (process.env.NODE_ENV === 'development') {
 //   axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
@@ -45,14 +47,38 @@ service.interceptors.request.use(config => {
 
 service.interceptors.response.use(
   response => {
+    // console.log('response result', response)
     if (response.status === 200) {
-      return Promise.resolve(response)
+      return Promise.resolve(response.data)
     } else {
+      // console.log('not 200')
+      Notify.create({
+        position: 'top',
+        color: 'red-6',
+        textColor: 'white',
+        message: 'Error Code : ' + response.status
+      })
       return Promise.reject(response)
     }
   },
   error => {
-    return Promise.reject(error.response)
+    // console.log('response error')
+    if (!_.isUndefined(error.response)) {
+      Notify.create({
+        position: 'top',
+        color: 'red-6',
+        textColor: 'white',
+        message: 'Error Code : ' + error.response.status
+      })
+    } else {
+      Notify.create({
+        position: 'top',
+        color: 'red-6',
+        textColor: 'white',
+        message: '响应异常，请检查网络环境！'
+      })
+    }
+    return Promise.reject(error)
   }
 )
 
