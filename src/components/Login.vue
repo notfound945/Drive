@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     async onSubmit () {
-      // this.$axios.defaults.baseURL = 'https://www.lshyj1234.xyz:8443/drive'
+      // this.$axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
       const bar = this.$refs.bar
       bar.start()
       const params = {
@@ -79,47 +79,29 @@ export default {
       // const res = await post('/drive/login', params)
       // const res = await this.$axios.post(
       const res = await post(
-        '/logiin',
+        '/login',
         params).then(result => {
+        bar.stop()
         return result
-      }).catch(error => {
-        return error
+      }).catch(() => {
+        bar.stop()
       })
-      bar.stop()
-      console.log('output ', res)
       if (!_.isUndefined(res)) {
-        if (res.status === 200) {
-          const msg = res.data.msg
-          if (_.isEqual(msg, '登录成功')) {
-            this.$q.notify({
-              position: 'top',
-              color: 'green-4',
-              textColor: 'white',
-              message: '登录成功'
-            })
-          } else {
-            this.$q.notify({
-              position: 'top',
-              color: 'red-4',
-              textColor: 'white',
-              message: msg
-            })
-          }
+        if (_.isEqual(res.msg, '登录成功')) {
+          this.$q.notify({
+            position: 'top',
+            color: 'green-4',
+            textColor: 'white',
+            message: '登录成功'
+          })
         } else {
           this.$q.notify({
             position: 'top',
             color: 'red-4',
             textColor: 'white',
-            message: 'error code: ' + res.status
+            message: res.msg
           })
         }
-      } else {
-        this.$q.notify({
-          position: 'top',
-          color: 'red-4',
-          textColor: 'white',
-          message: '网络环境异常！请检查后重试。'
-        })
       }
     }
   }
