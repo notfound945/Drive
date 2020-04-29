@@ -40,7 +40,7 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set default material-icons
-      lang: 'en-us', // Quasar language pack
+      lang: 'zh-hans', // Quasar language pack
 
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives

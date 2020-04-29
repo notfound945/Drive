@@ -21,7 +21,7 @@ service.interceptors.request.use(config => {
     Accept: 'application/json',
     'Content-Type': 'application/json; charset=UTF-8'
   } : {
-    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Access-Control-Allow-Headers': 'x-requested-with,content-type'
   }, config.headers)
 

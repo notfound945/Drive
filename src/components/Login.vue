@@ -56,6 +56,7 @@
 <script>
 import request from 'src/axios/request'
 import _ from 'lodash'
+
 export default {
   name: 'Login',
   data () {
