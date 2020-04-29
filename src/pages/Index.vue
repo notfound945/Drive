@@ -167,7 +167,7 @@ export default {
     },
     factoryFn (files) {
       return {
-        url: 'http://localhost:4444/upload',
+        url: '/upload',
         method: 'POST'
       }
     },
