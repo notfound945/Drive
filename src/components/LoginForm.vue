@@ -50,6 +50,12 @@
       size="5px"
       skip-hijack
     />
+    <div class="fixed-bottom">
+      <div class="text-weight-thin text-center">
+        <q-icon name="copyright"/>
+        2020 notfound945 | <a href="https://www.notfound945.cn/oneindex">湘ICP备19005461号</a> | 隐私声明和Cookie
+      </div>
+    </div>
   </div>
 </template>
 

@@ -1,23 +1,20 @@
 <template>
   <q-layout view="hhh lpr lfr" class="column justify-center items-center">
-    <q-page-container>
-      <router-view/>
-    </q-page-container>
+    <LoginForm></LoginForm>
   </q-layout>
 </template>
 
 <script>
+import LoginForm from 'components/LoginForm'
 
 export default {
-  name: 'HomeLayout',
+  name: 'Login',
   components: {
-  },
-  data () {
-    return {}
+    LoginForm
   }
 }
 </script>
 
-<style lang="sass" scoped>
+<style scoped>
 
 </style>
