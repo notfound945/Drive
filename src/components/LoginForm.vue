@@ -83,8 +83,6 @@ export default {
         'user.uid': this.username,
         'user.upassword': this.password
       }
-      // const res = await post('/drive/login', params)
-      // const res = await this.$axios.post(
       const res = await request.post(
         '/login',
         params).then(result => {
@@ -101,6 +99,8 @@ export default {
             textColor: 'white',
             message: '登录成功'
           })
+          this.$q.loading.show()
+          return await this.$router.replace('/home')
         } else {
           this.$q.notify({
             position: 'top',

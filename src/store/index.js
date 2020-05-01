@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersistence from 'vuex-persist'
 
 // import example from './module-example'
 
@@ -15,14 +16,26 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
+  const vuexLocal = new VuexPersistence({
+    storage: window.localStorage
+  })
   const Store = new Vuex.Store({
     modules: {
       // example
     },
 
+    state: {
+      count: 666
+    },
+    mutations: {
+      increment (state) {
+        state.count++
+      }
+    },
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEV
+    strict: process.env.DEV,
+    plugins: [vuexLocal.plugin]
   })
 
   return Store

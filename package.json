@@ -34,7 +34,8 @@
     "eslint-plugin-vue": "^6.1.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "qs": "^6.9.3"
+    "qs": "^6.9.3",
+    "vuex-persist": "^2.2.0"
   },
   "engines": {
     "node": ">= 10.18.1",
