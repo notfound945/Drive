@@ -5,9 +5,9 @@
         <q-toolbar-title>
           <div class="text-weight-bold">
             <q-avatar>
-              <q-icon name="cloud"></q-icon>
+              <q-icon name="cloud" size="md"></q-icon>
             </q-avatar>
-            Drive
+            Drive v 1.0
           </div>
           <!--          TODO 用户名和头像在此展示-->
         </q-toolbar-title>
@@ -28,11 +28,18 @@
       <div class="column q-ma-lg">
         <q-card class="col q-ma-xs" v-for="n in 20" v-bind:key="n">
           <q-card-section>
-            <q-icon name="folder"></q-icon>
-            Hello {{n}}
+            <q-icon name="folder" color="primary" size="md"></q-icon>
+            Folder {{n}}
+          </q-card-section>
+        </q-card>
+        <q-card class="col q-ma-xs" v-for="n in 10" v-bind:key="n">
+          <q-card-section>
+            <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
+            File {{n}}
           </q-card-section>
         </q-card>
       </div>
+<!--      FIXED 点击返回顶层 bug 有待解决-->
       <q-page-scroller expand position="top" :scroll-offset="-100" :offset="[0, 0]">
         <div class="row bg-white fit shadow-3 q-pa-md justify-between items-center">
           <div class="q-ml-md q-gutter-md">
@@ -40,7 +47,7 @@
               <q-list>
                 <q-item clickable v-close-popup @click="onItemClick">
                   <q-item-section avatar>
-                    <q-avatar icon="insert_drive_file" color="primary" text-color="white"/>
+                    <q-icon color="primary" name="insert_drive_file"></q-icon>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>上传文件</q-item-label>
@@ -49,7 +56,7 @@
 
                 <q-item clickable v-close-popup @click="onItemClick">
                   <q-item-section avatar>
-                    <q-avatar icon="folder" color="primary" text-color="white"/>
+                    <q-icon color="primary" name="folder"></q-icon>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>上传文件夹</q-item-label>

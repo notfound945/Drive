@@ -97,6 +97,7 @@ export default {
             position: 'top',
             color: 'green-4',
             textColor: 'white',
+            icon: 'sentiment_very_satisfied',
             message: '登录成功'
           })
           this.$q.loading.show()
@@ -106,6 +107,7 @@ export default {
             position: 'top',
             color: 'red-4',
             textColor: 'white',
+            icon: 'warning',
             message: res.msg
           })
         }

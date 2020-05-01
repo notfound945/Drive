@@ -75,6 +75,7 @@ service.interceptors.response.use(
         position: 'top',
         color: 'red-6',
         textColor: 'white',
+        icon: 'signal_cellular_null',
         message: '响应异常，请检查网络环境！'
       })
     }
