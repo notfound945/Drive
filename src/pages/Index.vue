@@ -11,11 +11,68 @@
           </div>
           <!--          TODO 用户名和头像在此展示-->
         </q-toolbar-title>
-        <div class="text-subtitle2">用户名</div>
-        <q-btn dense flat round icon="person" @click="right = !right"/>
+        <div class="text-subtitle2">
+          {{user.uname}}
+          <span class="text-italic">Lv. {{user.ugrade}}</span>
+        </div>
+        &nbsp;
+        <q-btn dense flat round>
+          <q-avatar size="md">
+            <img v-if="user.headImg != null" :src="user.headImg">
+            <q-icon v-else name="person"></q-icon>
+          </q-avatar>
+          <q-menu fit>
+            <q-list>
+              <q-item clickable style="min-width: 100px">
+                <q-item-section>个人中心</q-item-section>
+              </q-item>
+              <q-item clickable style="min-width: 100px">
+                <q-item-section>修改密码</q-item-section>
+              </q-item>
+              <q-item clickable style="min-width: 100px">
+                <q-item-section>注销账户</q-item-section>
+              </q-item>
+              <q-separator></q-separator>
+              <q-item clickable style="min-width: 100px">
+                <q-item-section>退  出</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
         <!--        TODO 右上角菜单-->
       </q-toolbar>
+      <div class="row bg-white fit shadow-1 q-pa-md justify-between items-center">
+        <div class="q-ml-md q-gutter-md">
+          <q-btn-dropdown icon="cloud_upload" color="primary" label="上  传">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section avatar>
+                  <q-icon color="primary" name="insert_drive_file"></q-icon>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>上传文件</q-item-label>
+                </q-item-section>
+              </q-item>
 
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section avatar>
+                  <q-icon color="primary" name="folder"></q-icon>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>上传文件夹</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn outline color="primary" icon="create_new_folder" label="新建文件夹"></q-btn>
+          <q-btn outline color="primary" icon="share" label="分 享"></q-btn>
+          <q-btn outline color="primary" icon="cloud_download" label="下 载"></q-btn>
+          <q-btn outline color="primary" icon="delete" label="删 除"></q-btn>
+          <q-btn outline color="primary" icon="file_copy" label="复制到"></q-btn>
+          <q-btn outline color="primary" icon="forward" label="移动到"></q-btn>
+        </div>
+        <!--        TODO 可添加搜索框-->
+      </div>
     </q-header>
     <q-page-container class="q-ma-md">
 
@@ -32,47 +89,15 @@
             Folder {{n}}
           </q-card-section>
         </q-card>
-        <q-card class="col q-ma-xs" v-for="n in 10" v-bind:key="n">
+        <q-card class="col q-ma-xs" v-for="n in [21, 22, 23, 24, 25]" v-bind:key="n">
           <q-card-section>
             <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
             File {{n}}
           </q-card-section>
         </q-card>
       </div>
-<!--      FIXED 点击返回顶层 bug 有待解决-->
-      <q-page-scroller expand position="top" :scroll-offset="-100" :offset="[0, 0]">
-        <div class="row bg-white fit shadow-3 q-pa-md justify-between items-center">
-          <div class="q-ml-md q-gutter-md">
-            <q-btn-dropdown icon="cloud_upload" color="primary" label="上  传">
-              <q-list>
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section avatar>
-                    <q-icon color="primary" name="insert_drive_file"></q-icon>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>上传文件</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section avatar>
-                    <q-icon color="primary" name="folder"></q-icon>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>上传文件夹</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-            <q-btn outline color="primary" icon="create_new_folder" label="新建文件夹"></q-btn>
-            <q-btn outline color="primary" icon="share" label="分 享"></q-btn>
-            <q-btn outline color="primary" icon="cloud_download" label="下 载"></q-btn>
-            <q-btn outline color="primary" icon="delete" label="删 除"></q-btn>
-            <q-btn outline color="primary" icon="file_copy" label="复制到"></q-btn>
-            <q-btn outline color="primary" icon="forward" label="移动到"></q-btn>
-          </div>
-          <!--        TODO 可添加搜索框-->
-        </div>
+      <q-page-scroller expand position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+        <q-btn fab icon="keyboard_arrow_up" color="accent"></q-btn>
       </q-page-scroller>
     </q-page-container>
     <router-view/>
@@ -85,10 +110,16 @@ export default {
   name: 'Index',
   data () {
     return {
-      right: false
+      right: false,
+      user: {
+        uname: '',
+        upgrade: 0,
+        headImg: ''
+      }
     }
   },
   mounted () {
+    this.user = this.$store.getters.getUser()
     this.$q.loading.hide()
   },
   methods: {

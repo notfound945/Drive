@@ -68,6 +68,7 @@ service.interceptors.response.use(
         position: 'top',
         color: 'red-6',
         textColor: 'white',
+        icon: 'cancel',
         message: 'Error Code : ' + error.response.status
       })
     } else {

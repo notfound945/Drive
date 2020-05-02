@@ -101,6 +101,8 @@ export default {
             message: '登录成功'
           })
           this.$q.loading.show()
+          const user = res.user
+          this.$store.commit('register', user)
           return await this.$router.replace('/home')
         } else {
           this.$q.notify({

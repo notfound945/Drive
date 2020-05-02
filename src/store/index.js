@@ -17,7 +17,7 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const vuexLocal = new VuexPersistence({
-    storage: window.localStorage
+    storage: window.sessionStorage
   })
   const Store = new Vuex.Store({
     modules: {
@@ -25,11 +25,20 @@ export default function (/* { ssrContext } */) {
     },
 
     state: {
-      count: 666
+      user: {
+        uname: 'null',
+        headImg: '',
+        ugrade: 0
+      }
     },
     mutations: {
-      increment (state) {
-        state.count++
+      register (state, user) {
+        state.user = user
+      }
+    },
+    getters: {
+      getUser: (state) => () => {
+        return state.user
       }
     },
     // enable strict mode (adds overhead!)
