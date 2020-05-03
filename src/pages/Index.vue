@@ -9,7 +9,6 @@
             </q-avatar>
             Drive v 1.0
           </div>
-          <!--          TODO 用户名和头像在此展示-->
         </q-toolbar-title>
         <div class="text-subtitle2">
           {{user.uname}}
@@ -34,7 +33,7 @@
               </q-item>
               <q-separator></q-separator>
               <q-item clickable style="min-width: 100px">
-                <q-item-section>退  出</q-item-section>
+                <q-item-section>退 出</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -45,12 +44,14 @@
         <div class="q-ml-md q-gutter-md">
           <q-btn-dropdown icon="cloud_upload" color="primary" label="上  传">
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup @click="bar = true">
                 <q-item-section avatar>
                   <q-icon color="primary" name="insert_drive_file"></q-icon>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label>上传文件</q-item-label>
+                  <q-item-label>
+                    上传文件
+                  </q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -96,12 +97,42 @@
           </q-card-section>
         </q-card>
       </div>
+
+<!--      弹出对话框-->
+      <q-dialog v-model="bar" persistent transition-show="flip-down" transition-hide="flip-up">
+        <q-card class="bg-white text-primary">
+          <q-bar>
+            <q-icon name="cloud_upload"/>
+            <div class="text-subtitle2">上传文件</div>
+            <q-space/>
+
+            <q-btn dense flat icon="close" v-close-popup>
+              <q-tooltip content-class="bg-white text-primary">关  闭</q-tooltip>
+            </q-btn>
+          </q-bar>
+
+          <q-card-section class="q-pt-none">
+<!--            文件上传组件-->
+            <div class="q-pa-md">
+              <q-uploader
+                :factory="factoryFn"
+                multiple
+                style="max-width: 600px"
+              />
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-white text-teal">
+            <q-btn flat label="取  消" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+<!--      快速返回顶部-->
       <q-page-scroller expand position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
         <q-btn fab icon="keyboard_arrow_up" color="accent"></q-btn>
       </q-page-scroller>
     </q-page-container>
     <router-view/>
-
   </q-layout>
 </template>
 
@@ -111,6 +142,7 @@ export default {
   data () {
     return {
       right: false,
+      bar: false,
       user: {
         uname: '',
         upgrade: 0,
@@ -129,6 +161,12 @@ export default {
     },
     onItemClick () {
       console.log('click the item')
+    },
+    factoryFn (files) {
+      return {
+        url: 'http://localhost:4444/upload',
+        method: 'POST'
+      }
     }
   }
 }
