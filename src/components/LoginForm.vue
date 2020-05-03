@@ -6,15 +6,19 @@
         <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>
       </div>
       <q-card-section class="col q-pa-xl">
-        <q-form
-          @submit="onSubmit"
-          class="q-gutter-md"
+        <q-form ref="loginForm"
+                @submit="onSubmit"
+                class="q-gutter-md"
         >
           <div>
             <q-input outlined v-model="username" label="用户名"
                      :rules="[
                       val => val && val.length > 0 || '请输入用户名',
-                      val => val && val.length <= 10 || '用户名长度不应为10个字符以上']"/>
+                      val => val && val.length <= 10 || '用户名长度不应为10个字符以上']">
+              <q-tooltip v-if="prevName != ''">
+                <div class="text-subtitle2">Tips：上次的登录用户名 {{this.prevName}}</div>
+              </q-tooltip>
+            </q-input>
           </div>
           <div>
             <q-input v-model="password" outlined label="密码" :type="isPwd ? 'password' : 'text'" lazy-rules
@@ -33,7 +37,7 @@
             <div class="q-pt-md">
               <div class="text-override">
                 <q-checkbox v-model="remember"/>
-                记住我
+                7天内记住用户名
               </div>
             </div>
           </div>
@@ -67,6 +71,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      prevName: '',
       username: '',
       password: '',
       text: '',
@@ -74,15 +79,26 @@ export default {
       remember: false
     }
   },
+  async mounted () {
+    // 页面加载完成 读入 Cookies 中用户名
+    if (this.$q.cookies.has('userName')) {
+      this.$set(this, 'prevName', this.$q.cookies.get('userName'))
+    }
+    if (this.$q.sessionStorage.getLength() > 0) {
+      return await this.$router.replace('/home')
+    }
+  },
   methods: {
     async onSubmit () {
       // this.$axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
       const bar = this.$refs.bar
       bar.start()
+      // 请求 params 参数
       const params = {
         'user.uid': this.username,
         'user.upassword': this.password
       }
+      // axios 请求
       const res = await request.post(
         '/login',
         params).then(result => {
@@ -91,6 +107,7 @@ export default {
       }).catch(() => {
         bar.stop()
       })
+      // 验证
       if (!_.isUndefined(res)) {
         if (_.isEqual(res.msg, '登录成功')) {
           this.$q.notify({
@@ -100,9 +117,20 @@ export default {
             icon: 'sentiment_very_satisfied',
             message: '登录成功'
           })
+          // 加载 Loading
           this.$q.loading.show()
+          // Cookies 记录用户名
+          if (this.remember === true) {
+            this.$q.cookies.set('userName', this.username,
+              {
+                expires: 7
+              }
+            )
+          }
           const user = res.user
+          // 写入 store
           this.$store.commit('register', user)
+          // 重定向主界面
           return await this.$router.replace('/home')
         } else {
           this.$q.notify({

@@ -32,7 +32,7 @@
                 <q-item-section>注销账户</q-item-section>
               </q-item>
               <q-separator></q-separator>
-              <q-item clickable style="min-width: 100px">
+              <q-item clickable @click="exit" style="min-width: 100px">
                 <q-item-section>退 出</q-item-section>
               </q-item>
             </q-list>
@@ -150,9 +150,12 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
     this.user = this.$store.getters.getUser()
     this.$q.loading.hide()
+    if (this.$q.sessionStorage.getLength() === 0) {
+      return await this.$router.replace('/')
+    }
   },
   methods: {
     add () {
@@ -166,6 +169,12 @@ export default {
       return {
         url: 'http://localhost:4444/upload',
         method: 'POST'
+      }
+    },
+    async exit () {
+      if (this.$q.sessionStorage.getLength() > 0) {
+        this.$q.sessionStorage.clear()
+        return await this.$router.replace('/')
       }
     }
   }
