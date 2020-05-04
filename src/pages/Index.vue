@@ -76,47 +76,72 @@
       </div>
     </q-header>
     <q-page-container class="q-ma-md">
-
-      <q-breadcrumbs gutter="xs" class="q-ma-lg">
-        <!--        TODO 导航栏-->
-        <q-breadcrumbs-el label="Home"/>
-        <q-breadcrumbs-el label="Components"/>
-        <q-breadcrumbs-el label="Breadcrumbs"/>
-      </q-breadcrumbs>
-      <div class="column q-ma-lg">
-        <q-card class="col q-ma-xs" v-for="n in 20" v-bind:key="n">
-          <q-card-section>
-            <q-icon name="folder" color="primary" size="md"></q-icon>
-            Folder {{n}}
-          </q-card-section>
-        </q-card>
-        <q-card class="col q-ma-xs" v-for="n in [21, 22, 23, 24, 25]" v-bind:key="n">
-          <q-card-section>
-            <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
-            File {{n}}
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="row">
-        <div class="col" v-for="n in [21, 22, 23, 24, 25]" v-bind:key="n">
-          <q-card class="col q-ma-xs">
-            <q-card-section>
-              <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
-              File {{n}}
-            </q-card-section>
-          </q-card>
-        </div>
-        <div class="col">
-        <q-card>
-          <q-card-section>
-            <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
-            dfdsfsd
-          </q-card-section>
-        </q-card>
+      <div class="row justify-between">
+        <q-breadcrumbs gutter="xs" class="q-ma-lg">
+          <!--        TODO 导航栏-->
+          <q-breadcrumbs-el label="Home"/>
+          <q-breadcrumbs-el label="Components"/>
+          <q-breadcrumbs-el label="Breadcrumbs"/>
+        </q-breadcrumbs>
+        <div class="q-ma-lg">
+          <div class="text-subtitle2">
+            视图样式：
+            <q-btn v-if="viewMode === 'column'" flat round color="white" text-color="primary" icon="view_list"
+                   @click="changeView"></q-btn>
+            <q-btn v-else flat round color="white" text-color="primary" icon="view_module" @click="changeView"></q-btn>
+          </div>
         </div>
       </div>
+      <!--       文件卡片-->
+      <div :class="viewMode">
+        <q-card class="col q-ma-sm" style="min-width: 220px" v-for="n in 20" v-bind:key="n">
+          <q-card-section>
 
-<!--      弹出对话框-->
+            <div class="row no-wrap">
+              <div class="col">
+                  <div class="file-title text-h6">苍井空与她的学生们 ({{n}})</div>
+                <div class="q-ma-md justify-center items-center text-right">
+                  <q-icon name="insert_drive_file" color="purple-3" size="100px"></q-icon>
+                </div>
+                <div class="text-subtitle2">2.3 GB</div>
+                <div class="text-weight-light">2020/05/01 16:09</div>
+              </div>
+
+              <div class="col-auto">
+                <q-btn color="grey-7" round flat icon="more_vert">
+                  <q-menu cover auto-close>
+                    <q-list>
+                      <q-item clickable>
+                        <q-item-section>重命名</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>复制到</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>移动到</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>分享文件</q-item-section>
+                      </q-item>
+                      <q-separator/>
+                      <q-item clickable>
+                        <q-item-section><span class="text-red">删除文件</span></q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </div>
+          </q-card-section>
+          <q-separator/>
+
+          <q-card-actions>
+            <q-btn flat icon="open_in_new" color="purple" label="打  开"/>
+            <q-btn flat icon="cloud_download" color="primary" label="下  载"/>
+          </q-card-actions>
+        </q-card>
+      </div>
+      <!--      弹出对话框-->
       <q-dialog v-model="bar" persistent transition-show="flip-down" transition-hide="flip-up">
         <q-card class="bg-white text-primary">
           <q-bar>
@@ -125,12 +150,12 @@
             <q-space/>
 
             <q-btn dense flat icon="close" v-close-popup>
-              <q-tooltip content-class="bg-white text-primary">关  闭</q-tooltip>
+              <q-tooltip content-class="bg-white text-primary">关 闭</q-tooltip>
             </q-btn>
           </q-bar>
 
           <q-card-section class="q-pt-none">
-<!--            文件上传组件-->
+            <!--            文件上传组件-->
             <div class="q-pa-md">
               <q-uploader
                 :factory="factoryFn"
@@ -141,11 +166,11 @@
           </q-card-section>
 
           <q-card-actions align="right" class="bg-white text-teal">
-            <q-btn flat label="取  消" v-close-popup />
+            <q-btn flat label="取  消" v-close-popup/>
           </q-card-actions>
         </q-card>
       </q-dialog>
-<!--      快速返回顶部-->
+      <!--      快速返回顶部-->
       <q-page-scroller expand position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
         <q-btn fab icon="keyboard_arrow_up" color="accent"></q-btn>
       </q-page-scroller>
@@ -161,6 +186,7 @@ export default {
     return {
       right: false,
       bar: false,
+      viewMode: 'row',
       user: {
         uname: '',
         upgrade: 0,
@@ -190,12 +216,22 @@ export default {
     onItemClick () {
       console.log('click the item')
     },
+    // 改变视图
+    changeView () {
+      if (this.viewMode === 'column') {
+        this.viewMode = 'row'
+      } else if (this.viewMode === 'row') {
+        this.viewMode = 'column'
+      }
+    },
+    // 文件上传表单
     factoryFn (files) {
       return {
         url: '/upload',
         method: 'POST'
       }
     },
+    // 注销
     async exit () {
       if (this.$q.sessionStorage.getLength() > 0) {
         this.$q.sessionStorage.clear()
@@ -212,4 +248,14 @@ export default {
     width: 100px
     min-width: 150px
     max-width: 150px
+
+  .file-title
+    width: 100%
+    /*根据自己项目进行定义宽度*/
+    overflow: hidden
+    /*设置超出的部分进行影藏*/
+    text-overflow: ellipsis
+    /*设置超出部分使用省略号*/
+    white-space: nowrap
+    font-size: 18px
 </style>
