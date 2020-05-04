@@ -15,9 +15,6 @@
                      :rules="[
                       val => val && val.length > 0 || '请输入用户名',
                       val => val && val.length <= 10 || '用户名长度不应为10个字符以上']">
-              <q-tooltip v-if="prevName != ''">
-                <div class="text-subtitle2">Tips：上次的登录用户名 {{this.prevName}}</div>
-              </q-tooltip>
             </q-input>
           </div>
           <div>
@@ -47,6 +44,18 @@
         </q-form>
       </q-card-section>
     </q-card>
+    <!--    记录用户名复制-->
+    <q-dialog v-model="seamless" seamless transition-show="scale" transition-hide="fade" position="bottom">
+      <q-card style="width: 450px">
+        <q-card-section class="row items-center no-wrap">
+          <q-icon name="help_outline" color="primary" size="md"></q-icon>
+          <div class="q-ma-md text-subtitle1">上次登录用户名 <span class="text-bold">{{prevName}}</span></div>
+          <q-btn flat style="color: #FF0080" text-color="primary" label="复  制" @click="copyTo" />
+          <q-btn flat v-close-popup style="color: #FF0080" label="取  消" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!--    ajax 栏-->
     <q-ajax-bar
       ref="bar"
       position="bottom"
@@ -54,6 +63,7 @@
       size="5px"
       skip-hijack
     />
+    <!--    底部版权信息-->
     <div class="fixed-bottom">
       <div class="text-weight-thin text-center">
         <q-icon name="copyright"/>
@@ -66,6 +76,7 @@
 <script>
 import request from 'src/axios/request'
 import _ from 'lodash'
+import { copyToClipboard } from 'quasar'
 
 export default {
   name: 'Login',
@@ -76,20 +87,34 @@ export default {
       password: '',
       text: '',
       isPwd: true,
-      remember: false
+      remember: false,
+      seamless: false
     }
   },
   async mounted () {
     // 页面加载完成 读入 Cookies 中用户名
     if (this.$q.cookies.has('userName')) {
       this.$set(this, 'prevName', this.$q.cookies.get('userName'))
+      this.seamless = true
     }
     if (this.$q.sessionStorage.getLength() > 0) {
       return await this.$router.replace('/home')
     }
   },
   methods: {
+    copyTo () {
+      copyToClipboard(this.prevName)
+        .then(() => {
+          this.seamless = false
+          // 成功!
+        })
+        .catch(() => {
+          // 失败
+        })
+    },
     async onSubmit () {
+      // 复制用户名密码框关闭
+      this.seamless = false
       // this.$axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
       const bar = this.$refs.bar
       bar.start()

@@ -97,6 +97,24 @@
           </q-card-section>
         </q-card>
       </div>
+      <div class="row">
+        <div class="col" v-for="n in [21, 22, 23, 24, 25]" v-bind:key="n">
+          <q-card class="col q-ma-xs">
+            <q-card-section>
+              <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
+              File {{n}}
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col">
+        <q-card>
+          <q-card-section>
+            <q-icon name="insert_drive_file" color="primary" size="md"></q-icon>
+            dfdsfsd
+          </q-card-section>
+        </q-card>
+        </div>
+      </div>
 
 <!--      弹出对话框-->
       <q-dialog v-model="bar" persistent transition-show="flip-down" transition-hide="flip-up">
@@ -154,6 +172,13 @@ export default {
     this.user = this.$store.getters.getUser()
     this.$q.loading.hide()
     if (this.$q.sessionStorage.getLength() === 0) {
+      this.$q.notify({
+        message: '请先登录！',
+        color: 'red-4',
+        textColor: 'white',
+        position: 'top',
+        icon: 'error_outline'
+      })
       return await this.$router.replace('/')
     }
   },
