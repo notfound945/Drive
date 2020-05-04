@@ -180,8 +180,13 @@
 </template>
 
 <script>
+import { page } from 'vue-analytics'
 export default {
   name: 'Index',
+  // Google Analytics
+  track () {
+    page('/')
+  },
   data () {
     return {
       right: false,

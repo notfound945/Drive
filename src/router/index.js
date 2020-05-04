@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
+import VueAnalytics from 'vue-analytics'
 
 import routes from './routes'
 
 Vue.use(VueRouter)
+Vue.use(VueAnalytics, {
+  id: 'UA-165378871-1'
+})
 Vue.prototype.$axios = axios
 
 /*

@@ -77,6 +77,7 @@
 import request from 'src/axios/request'
 import _ from 'lodash'
 import { copyToClipboard } from 'quasar'
+import { page } from 'vue-analytics'
 
 export default {
   name: 'Login',
@@ -102,6 +103,11 @@ export default {
     }
   },
   methods: {
+    // Google Analytics
+    track () {
+      page('/')
+    },
+    // 复制到剪贴板
     copyTo () {
       copyToClipboard(this.prevName)
         .then(() => {
