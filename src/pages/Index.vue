@@ -77,7 +77,7 @@
     </q-header>
     <q-page-container class="q-ma-md">
       <div class="row justify-between">
-        <q-breadcrumbs gutter="xs" class="q-ma-lg">
+        <q-breadcrumbs gutter="xs" class="q-ma-lg justify-center items-center">
           <!--        TODO 导航栏-->
           <q-breadcrumbs-el label="Home"/>
           <q-breadcrumbs-el label="Components"/>
@@ -96,40 +96,90 @@
       <div :class="viewMode">
         <q-card class="col q-ma-sm" style="min-width: 220px" v-for="n in 20" v-bind:key="n">
           <q-card-section>
-
-            <div class="row no-wrap">
+<!--        缩略图样式-->
+            <div v-if="viewMode === 'row'" class="row no-wrap">
               <div class="col">
-                  <div class="file-title text-h6">苍井空与她的学生们 ({{n}})</div>
-                <div class="q-ma-md justify-center items-center text-right">
-                  <q-icon name="insert_drive_file" color="purple-3" size="100px"></q-icon>
+                <div class="row justify-center items-center">
+                  <div class="col file-title text-h6">【高清特辑】苍井空与她的学生们 ({{n}}).avi</div>
+                  <!--                按钮菜单-->
+                  <div class="col-auto">
+                    <q-btn color="grey-7" round flat icon="more_vert">
+                      <q-menu cover auto-close>
+                        <q-list>
+                          <q-item clickable>
+                            <q-item-section>重命名</q-item-section>
+                          </q-item>
+                          <q-item clickable>
+                            <q-item-section>复制到</q-item-section>
+                          </q-item>
+                          <q-item clickable>
+                            <q-item-section>移动到</q-item-section>
+                          </q-item>
+                          <q-item clickable>
+                            <q-item-section>分享文件</q-item-section>
+                          </q-item>
+                          <q-separator/>
+                          <q-item clickable>
+                            <q-item-section><span class="text-red">删除文件</span></q-item-section>
+                          </q-item>
+                        </q-list>
+                      </q-menu>
+                    </q-btn>
+                  </div>
+                </div>
+                <div class="q-ma-md justify-center items-center text-center">
+                  <q-icon name="local_movies" color="purple-3" size="100px"></q-icon>
                 </div>
                 <div class="text-subtitle2">2.3 GB</div>
                 <div class="text-weight-light">2020/05/01 16:09</div>
               </div>
+<!--              工具提示-->
+              <q-tooltip
+                transition-show="scale"
+                transition-hide="scale"
+                content-style="font-size: 16px; margin: 10px"
+                content-class="bg-purple text-white"
+              >
+                【高清特辑】苍井空与她的学生们 ({{n}}).avi
+              </q-tooltip>
+            </div>
+<!--            列表样式-->
+            <div v-else class="row justify-between items-center">
+              <div class="row col-6">
+                <div class="row q-ma-md items-center">
+                  <q-icon name="local_movies" color="purple-3" size="lg"></q-icon>
+                  <div class="col file-title text-h6">【高清特辑】苍井空与她的学生们 ({{n}}).avi</div>
+                </div>
+              </div>
 
-              <div class="col-auto">
-                <q-btn color="grey-7" round flat icon="more_vert">
-                  <q-menu cover auto-close>
-                    <q-list>
-                      <q-item clickable>
-                        <q-item-section>重命名</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>复制到</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>移动到</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>分享文件</q-item-section>
-                      </q-item>
-                      <q-separator/>
-                      <q-item clickable>
-                        <q-item-section><span class="text-red">删除文件</span></q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
+              <div class="row col-4 items-center justify-end">
+                <div class="col-3 text-subtitle2">2.3 GB</div>
+                <div class="col-4 text-weight-light">2020/05/01 16:09</div>
+<!--                按钮菜单-->
+                <div class="col-1">
+                  <q-btn color="grey-7" round flat icon="more_vert">
+                    <q-menu cover auto-close>
+                      <q-list>
+                        <q-item clickable>
+                          <q-item-section>重命名</q-item-section>
+                        </q-item>
+                        <q-item clickable>
+                          <q-item-section>复制到</q-item-section>
+                        </q-item>
+                        <q-item clickable>
+                          <q-item-section>移动到</q-item-section>
+                        </q-item>
+                        <q-item clickable>
+                          <q-item-section>分享文件</q-item-section>
+                        </q-item>
+                        <q-separator/>
+                        <q-item clickable>
+                          <q-item-section><span class="text-red">删除文件</span></q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-btn>
+                </div>
               </div>
             </div>
           </q-card-section>
@@ -181,6 +231,7 @@
 
 <script>
 import { page } from 'vue-analytics'
+
 export default {
   name: 'Index',
   // Google Analytics
@@ -191,7 +242,7 @@ export default {
     return {
       right: false,
       bar: false,
-      viewMode: 'row',
+      viewMode: 'column',
       user: {
         uname: '',
         upgrade: 0,
