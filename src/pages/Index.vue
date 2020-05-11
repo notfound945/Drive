@@ -66,11 +66,46 @@
             </q-list>
           </q-btn-dropdown>
           <q-btn outline color="primary" icon="create_new_folder" label="新建文件夹"></q-btn>
-          <q-btn outline color="primary" icon="share" label="分 享"></q-btn>
-          <q-btn outline color="primary" icon="cloud_download" label="下 载"></q-btn>
-          <q-btn outline color="primary" icon="delete" label="删 除"></q-btn>
-          <q-btn outline color="primary" icon="file_copy" label="复制到"></q-btn>
-          <q-btn outline color="primary" icon="forward" label="移动到"></q-btn>
+          <transition
+            name="share"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <q-btn v-if="showTopOperation" outline color="primary" icon="share" key="share" label="分 享"></q-btn>
+          </transition>
+          <transition
+            name="share"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <q-btn v-if="showTopOperation" outline color="primary" icon="cloud_download" label="下 载"></q-btn>
+          </transition>
+          <transition
+            name="share"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <q-btn v-if="showTopOperation" outline color="primary" icon="delete" label="删 除"></q-btn>
+          </transition>
+          <transition
+            name="share"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <q-btn v-if="showTopOperation" outline color="primary" icon="file_copy" label="复制到"></q-btn>
+          </transition>
+          <transition
+            name="share"
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <q-btn v-if="showTopOperation" outline color="primary" icon="forward" label="移动到"></q-btn>
+          </transition>
         </div>
         <!--        TODO 可添加搜索框-->
       </div>
@@ -96,11 +131,14 @@
       <div :class="viewMode">
         <q-card class="col q-ma-sm" style="min-width: 220px" v-for="n in 20" v-bind:key="n">
           <q-card-section>
-<!--        缩略图样式-->
+            <!--        缩略图样式-->
             <div v-if="viewMode === 'row'" class="row no-wrap">
               <div class="col">
-                <div class="row justify-center items-center">
-                  <div class="col file-title text-h6">【高清特辑】苍井空与她的学生们 ({{n}}).avi</div>
+                <div class="row justify-center items-center q-mt-md">
+                  <q-checkbox class="absolute-top-left q-ma-sm" dense v-model="checked[n]" color="cyan"/>
+                  <div class="col file-title text-h6 items-center">
+                    【高清特辑】苍井空与她的学生们 ({{n}}).avi
+                  </div>
                   <!--                按钮菜单-->
                   <div class="col-auto">
                     <q-btn color="grey-7" round flat icon="more_vert">
@@ -133,7 +171,7 @@
                 <div class="text-subtitle2">2.3 GB</div>
                 <div class="text-weight-light">2020/05/01 16:09</div>
               </div>
-<!--              工具提示-->
+              <!--              工具提示-->
               <q-tooltip
                 transition-show="scale"
                 transition-hide="scale"
@@ -143,19 +181,21 @@
                 【高清特辑】苍井空与她的学生们 ({{n}}).avi
               </q-tooltip>
             </div>
-<!--            列表样式-->
+            <!--            列表样式-->
             <div v-else class="row justify-between items-center">
               <div class="row col-6">
                 <div class="row q-ma-md items-center">
-                  <q-icon name="local_movies" color="purple-3" size="lg"></q-icon>
-                  <div class="col file-title text-h6">【高清特辑】苍井空与她的学生们 ({{n}}).avi</div>
+                  <div class="col file-title text-h6 items-center">
+                    <q-checkbox dense v-model="checked[n]" label="" color="cyan"/>
+                    【高清特辑】苍井空与她的学生们 ({{n}}).avi
+                  </div>
                 </div>
               </div>
 
               <div class="row col-4 items-center justify-end">
                 <div class="col-3 text-subtitle2">2.3 GB</div>
                 <div class="col-4 text-weight-light">2020/05/01 16:09</div>
-<!--                按钮菜单-->
+                <!--                按钮菜单-->
                 <div class="col-1">
                   <q-btn color="grey-7" round flat icon="more_vert">
                     <q-menu cover auto-close>
@@ -242,7 +282,13 @@ export default {
     return {
       right: false,
       bar: false,
+      // 选择文件时，顶部操作动态显示
+      showTopOperation: false,
+      // 视图样式
       viewMode: 'column',
+      // 选择框
+      checked: new Array(100).fill(false),
+      // 用户信息
       user: {
         uname: '',
         upgrade: 0,
@@ -251,6 +297,7 @@ export default {
     }
   },
   async mounted () {
+    this.checked.fill(false)
     this.user = this.$store.getters.getUser()
     this.$q.loading.hide()
     if (this.$q.sessionStorage.getLength() === 0) {
@@ -292,6 +339,14 @@ export default {
       if (this.$q.sessionStorage.getLength() > 0) {
         this.$q.sessionStorage.clear()
         return await this.$router.replace('/')
+      }
+    }
+  },
+  watch: {
+    // 监听选择数组变化 以便动态显示顶底操作
+    checked: {
+      handler (check) {
+        this.showTopOperation = check.indexOf(true) !== -1
       }
     }
   }
