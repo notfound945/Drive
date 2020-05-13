@@ -330,7 +330,7 @@ export default {
     // 文件上传表单
     factoryFn (files) {
       return {
-        url: '/upload',
+        url: '/fileUp',
         method: 'POST'
       }
     },

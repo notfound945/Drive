@@ -106,12 +106,12 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
       // public: 'https://www.lshyj1234.xyz:8443/drive',
       proxy: {
-        '/login': {
-          target: 'https://www.lshyj1234.xyz/drive/login', //对应自己的接口
+        '/userLogin': {
+          target: 'https://www.lshyj1234.xyz/drive/userLogin',
           changeOrigin: true,
           ws: true,
           pathRewrite: {
-            '^/login': ''
+            '^/userLogin': ''
           }
         }
       }

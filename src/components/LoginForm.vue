@@ -1,6 +1,6 @@
 <template>
-  <div class="fit column wrap justify-center items-center content-center q-gutter-md">
-    <q-card class="my-card relative-position q-pa-lg">
+  <div class="fit column wrap justify-center items-center content-center q-gutter-xs">
+    <q-card class="my-card relative-position q-pa-md">
       <div class="row justify-center absolute-center" style="top: -20px">
         <!--        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />-->
         <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>
@@ -10,6 +10,7 @@
                 @submit="onSubmit"
                 class="q-gutter-md"
         >
+          <!--           用户名框-->
           <div>
             <q-input outlined v-model="username" label="用户名"
                      :rules="[
@@ -17,6 +18,7 @@
                       val => val && val.length <= 10 || '用户名长度不应为10个字符以上']">
             </q-input>
           </div>
+          <!--           密码框-->
           <div>
             <q-input v-model="password" outlined label="密码" :type="isPwd ? 'password' : 'text'" lazy-rules
                      :rules="[
@@ -31,6 +33,34 @@
                 />
               </template>
             </q-input>
+          </div>
+          <!--           验证码框-->
+          <div>
+            <div class="row justify-between items-start">
+              <div class="col-6">
+                <q-input outlined v-model="verifyCode" label="验证码" :rules="[
+                     val => val && val.length > 0 || '请输入验证码',
+                     val => val && val.length >= 4 || '验证码为4位',
+                     val => val && val.length <= 4 || '验证码为4位'
+                     ]">
+                </q-input>
+              </div>
+              <div class="col-6 text-right">
+                <q-img
+                  v-if="imgUrl !== null"
+                  @click="changeCode"
+                  :src="imgUrl"
+                  style="width: 120px"
+                  title="看不清？点击重新获取"
+                >
+                  <template v-slot:error>
+                    <div class="absolute-full flex flex-center bg-negative text-white">
+                      加载失败
+                    </div>
+                  </template>
+                </q-img>
+              </div>
+            </div>
             <div class="q-pt-md">
               <div class="text-override">
                 <q-checkbox v-model="remember"/>
@@ -50,8 +80,8 @@
         <q-card-section class="row items-center no-wrap">
           <q-icon name="help_outline" color="primary" size="md"></q-icon>
           <div class="q-ma-md text-subtitle1">上次登录用户名 <span class="text-bold">{{prevName}}</span></div>
-          <q-btn flat style="color: #FF0080" text-color="primary" label="复  制" @click="copyTo" />
-          <q-btn flat v-close-popup style="color: #FF0080" label="取  消" />
+          <q-btn flat style="color: #FF0080" text-color="primary" label="复  制" @click="copyTo"/>
+          <q-btn flat v-close-popup style="color: #FF0080" label="取  消"/>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -83,13 +113,25 @@ export default {
   name: 'Login',
   data () {
     return {
+      // 记录的用户名
       prevName: '',
+      // 表单用户名
       username: '',
+      // 表单密码
       password: '',
+      // 验证码
+      verifyCode: '',
+      // 验证图片
+      verifyImage: null,
+      // 显示密码
       text: '',
       isPwd: true,
+      // 记住密码
       remember: false,
-      seamless: false
+      // 底部弹出用户名复制窗口
+      seamless: false,
+      // 验证码图片地址
+      imgUrl: null
     }
   },
   async mounted () {
@@ -101,6 +143,16 @@ export default {
     if (this.$q.sessionStorage.getLength() > 0) {
       return await this.$router.replace('/home')
     }
+    // 加载验证码
+    this.verifyImage = await request.get('https://lshyj1234.xyz/drive/getCode', {
+      responseType: 'blob'
+    }).then(result => {
+      return result
+    }).catch(() => {
+      return null
+    })
+    const blob = new Blob([this.verifyImage], { type: 'image/png;charset=utf-8' })
+    this.imgUrl = window.URL.createObjectURL(blob)
   },
   methods: {
     // Google Analytics
@@ -126,12 +178,13 @@ export default {
       bar.start()
       // 请求 params 参数
       const params = {
-        'user.uid': this.username,
-        'user.upassword': this.password
+        userid: this.username,
+        password: this.password,
+        sureCode: this.verifyCode
       }
       // axios 请求
       const res = await request.post(
-        '/login',
+        '/userLogin',
         params).then(result => {
         bar.stop()
         return result
@@ -140,13 +193,13 @@ export default {
       })
       // 验证
       if (!_.isUndefined(res)) {
-        if (_.isEqual(res.msg, '登录成功')) {
+        if (_.isEqual(res.flag, true)) {
           this.$q.notify({
             position: 'top',
             color: 'green-4',
             textColor: 'white',
             icon: 'sentiment_very_satisfied',
-            message: '登录成功'
+            message: res.message
           })
           // 加载 Loading
           this.$q.loading.show()
@@ -169,10 +222,25 @@ export default {
             color: 'red-4',
             textColor: 'white',
             icon: 'warning',
-            message: res.msg
+            message: res.message
           })
         }
       }
+    },
+    // 重新获取验证码
+    async changeCode () {
+      this.verifyImage = null
+      this.imgUrl = null
+      // 加载验证码
+      this.verifyImage = await request.get('https://lshyj1234.xyz/drive/getCode', {
+        responseType: 'blob'
+      }).then(result => {
+        return result
+      }).catch(() => {
+        return null
+      })
+      const blob = new Blob([this.verifyImage], { type: 'image/png;charset=utf-8' })
+      this.imgUrl = window.URL.createObjectURL(blob)
     }
   }
 }
