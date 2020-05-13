@@ -35,10 +35,15 @@
             </q-input>
           </div>
           <!--           验证码框-->
-          <div>
-            <div class="row justify-between items-start">
-              <div class="col-6">
-                <q-input outlined v-model="verifyCode" label="验证码" :rules="[
+          <transition
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+          >
+            <div v-if="password.length >= 6">
+              <div class="row justify-between items-start">
+                <div class="col-6">
+                  <q-input outlined v-model="verifyCode" label="验证码" :rules="[
                      val => val && val.length > 0 || '请输入验证码',
                      val => val && val.length >= 4 || '验证码为4位',
                      val => val && val.length <= 4 || '验证码为4位'
