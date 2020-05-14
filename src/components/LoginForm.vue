@@ -1,11 +1,14 @@
 <template>
-  <div class="column wrap justify-center items-center content-center q-gutter-xs">
-    <q-card class="my-card relative-position q-pa-md">
-      <div class="row justify-center absolute-center" style="top: -20px">
-        <!--        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />-->
-        <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>
+  <div class="q-gutter-xs">
+    <q-card class="col my-card q-pa-md fixed-right items-center">
+      <div class="title">
+        <h5 class="text-center">{{hello}}</h5>
       </div>
-      <q-card-section class="col q-pa-xl">
+<!--      <div class="row justify-center absolute-center" style="top: -20px">-->
+<!--        &lt;!&ndash;        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />&ndash;&gt;-->
+<!--        <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>-->
+<!--      </div>-->
+      <q-card-section class="col q-pa-xl items-center">
         <q-form ref="loginForm"
                 @submit="onSubmit"
                 class="q-gutter-md"
@@ -99,20 +102,14 @@
       size="5px"
       skip-hijack
     />
-    <!--    底部版权信息-->
-    <div class="fixed-bottom">
-      <div class="text-weight-thin text-center">
-        <q-icon name="copyright"/>
-        2020 notfound945 | <a href="https://www.notfound945.cn/oneindex">湘ICP备19005461号</a> | 隐私声明和Cookie
-      </div>
-    </div>
+
   </div>
 </template>
 
 <script>
 import request from 'src/axios/request'
 import _ from 'lodash'
-import { copyToClipboard, uid } from 'quasar'
+import { copyToClipboard, uid, date } from 'quasar'
 import { page } from 'vue-analytics'
 
 export default {
@@ -137,7 +134,9 @@ export default {
       // 底部弹出用户名复制窗口
       seamless: false,
       // 验证码图片地址
-      imgUrl: null
+      imgUrl: null,
+      // 问候语
+      hello: ''
     }
   },
   async mounted () {
@@ -160,6 +159,28 @@ export default {
     })
     const blob = new Blob([this.verifyImage], { type: 'image/png;charset=utf-8' })
     this.imgUrl = window.URL.createObjectURL(blob)
+    // 加载问候语
+    let nowTime = date.formatDate(Date.now(), 'HH')
+    nowTime = parseInt(nowTime)
+    if (nowTime <= 5 && nowTime >= 0) {
+      this.hello = '夜深了，睡觉吧~'
+    } else if (nowTime >= 6 && nowTime <= 7) {
+      this.hello('又是元气满满的一天，冲鸭！！')
+    } else if (nowTime >= 8 && nowTime <= 9) {
+      this.hello = '清早起床，运动一下吧——'
+    } else if (nowTime >= 10 && nowTime <= 11) {
+      this.hello = '上午好，今天忙什么呢?'
+    } else if (nowTime >= 12 && nowTime <= 13) {
+      this.hello = '中午了，吃个饭休息一下。'
+    } else if (nowTime >= 14 && nowTime <= 17) {
+      this.hello = '下午茶时间到啦！'
+    } else if (nowTime >= 18 && nowTime <= 20) {
+      this.hello = '一天要结束了，世界安静下来了'
+    } else if (nowTime >= 21 && nowTime <= 23) {
+      this.hello = '早点睡觉觉，熬夜伤身体鸭~'
+    } else {
+      this.hello = '欢迎使用，请登录'
+    }
   },
   methods: {
     // Google Analytics
@@ -256,7 +277,6 @@ export default {
 
 <style lang="sass" scoped>
   .my-card
-    width: 100%
-    max-width: 400px
-
+    width: 400px
+    max-height: 95%
 </style>

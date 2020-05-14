@@ -7254,6 +7254,18 @@ mixin-deep@^1.2.0:
   dependencies:
     minimist "^1.2.5"
 
+moment-timer@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/moment-timer/download/moment-timer-1.3.0.tgz#f2305a1af2fa8a27c6399b82a49fd1c438293546"
+  integrity sha1-8jBaGvL6iifGOZuCpJ/RxDgpNUY=
+  dependencies:
+    moment ">= 1.6.0"
+
+"moment@>= 1.6.0":
+  version "2.25.3"
+  resolved "https://registry.npm.taobao.org/moment/download/moment-2.25.3.tgz?cache=0&sync_timestamp=1588605303253&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmoment%2Fdownload%2Fmoment-2.25.3.tgz#252ff41319cf41e47761a1a88cab30edfe9808c0"
+  integrity sha1-JS/0ExnPQeR3YaGojKsw7f6YCMA=
+
 moment@^2.22.1, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmoment%2Fdownload%2Fmoment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
