@@ -29,11 +29,12 @@ export default function (/* { ssrContext } */) {
         uname: 'null',
         headImg: '',
         ugrade: 0
-      }
+      },
+      sessionId: ''
     },
     mutations: {
-      register (state, user) {
-        state.user = user
+      register (state, sessionId) {
+        state.sessionId = sessionId
       }
     },
     getters: {

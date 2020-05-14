@@ -8,9 +8,9 @@ import _ from 'lodash'
 // } else if (process.env.NODE_ENV === 'debug') {
 //   axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
 // } else if
-if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'https://lshyj1234.xyz/drive'
-}
+// if (process.env.NODE_ENV === 'production') {
+//   axios.defaults.baseURL = 'https://lshyj1234.xyz/drive'
+// }
 
 const service = axios.create({
   timeout: 5000

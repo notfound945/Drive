@@ -1,5 +1,5 @@
 <template>
-  <div class="fit column wrap justify-center items-center content-center q-gutter-xs">
+  <div class="column wrap justify-center items-center content-center q-gutter-xs">
     <q-card class="my-card relative-position q-pa-md">
       <div class="row justify-center absolute-center" style="top: -20px">
         <!--        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />-->
@@ -37,8 +37,8 @@
           <!--           验证码框-->
           <transition
             appear
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut"
+            enter-active-class="animated fadeInUp"
+            leave-active-class="animated fadeOutDown"
           >
             <div v-if="password.length >= 6">
               <div class="row justify-between items-start">
@@ -48,31 +48,32 @@
                      val => val && val.length >= 4 || '验证码为4位',
                      val => val && val.length <= 4 || '验证码为4位'
                      ]">
-                </q-input>
+                  </q-input>
+                </div>
+                <div class="col-6 text-right">
+                  <q-img
+                    v-if="imgUrl !== null"
+                    @click="changeCode"
+                    :src="imgUrl"
+                    style="width: 120px"
+                    title="看不清？点击重新获取"
+                  >
+                    <template v-slot:error>
+                      <div class="absolute-full flex flex-center bg-negative text-white">
+                        加载失败
+                      </div>
+                    </template>
+                  </q-img>
+                </div>
               </div>
-              <div class="col-6 text-right">
-                <q-img
-                  v-if="imgUrl !== null"
-                  @click="changeCode"
-                  :src="imgUrl"
-                  style="width: 120px"
-                  title="看不清？点击重新获取"
-                >
-                  <template v-slot:error>
-                    <div class="absolute-full flex flex-center bg-negative text-white">
-                      加载失败
-                    </div>
-                  </template>
-                </q-img>
+              <div class="q-pt-md">
+                <div class="text-override">
+                  <q-checkbox v-model="remember"/>
+                  7天内记住用户名
+                </div>
               </div>
             </div>
-            <div class="q-pt-md">
-              <div class="text-override">
-                <q-checkbox v-model="remember"/>
-                7天内记住用户名
-              </div>
-            </div>
-          </div>
+          </transition>
           <div class="row justify-center">
             <q-btn class="full-width" label="登录" type="submit" size="lg" color="primary"/>
           </div>
@@ -111,7 +112,7 @@
 <script>
 import request from 'src/axios/request'
 import _ from 'lodash'
-import { copyToClipboard } from 'quasar'
+import { copyToClipboard, uid } from 'quasar'
 import { page } from 'vue-analytics'
 
 export default {
@@ -145,7 +146,7 @@ export default {
       this.$set(this, 'prevName', this.$q.cookies.get('userName'))
       this.seamless = true
     }
-    if (this.$q.sessionStorage.getLength() > 0) {
+    if (this.$q.sessionStorage.has('sessionId')) {
       return await this.$router.replace('/home')
     }
     // 加载验证码
@@ -189,13 +190,14 @@ export default {
       }
       // axios 请求
       const res = await request.post(
-        '/userLogin',
+        '/drive/userLogin',
         params).then(result => {
         bar.stop()
         return result
       }).catch(() => {
         bar.stop()
       })
+      // console.log('get response result: ', res)
       // 验证
       if (!_.isUndefined(res)) {
         if (_.isEqual(res.flag, true)) {
@@ -216,9 +218,9 @@ export default {
               }
             )
           }
-          const user = res.user
+          // const user = res.user
           // 写入 store
-          this.$store.commit('register', user)
+          this.$store.commit('register', uid())
           // 重定向主界面
           return await this.$router.replace('/home')
         } else {
@@ -255,4 +257,5 @@ export default {
   .my-card
     width: 100%
     max-width: 400px
+
 </style>

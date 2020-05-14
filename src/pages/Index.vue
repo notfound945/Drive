@@ -300,7 +300,7 @@ export default {
     this.checked.fill(false)
     this.user = this.$store.getters.getUser()
     this.$q.loading.hide()
-    if (!this.$q.sessionStorage.has('user')) {
+    if (!this.$q.sessionStorage.has('sessionId')) {
       this.$q.notify({
         message: '请先登录！',
         color: 'red-4',
