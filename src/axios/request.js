@@ -9,11 +9,12 @@ import _ from 'lodash'
 //   axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
 // } else if
 // if (process.env.NODE_ENV === 'production') {
-//   axios.defaults.baseURL = 'https://lshyj1234.xyz/drive'
+//   axios.defaults.baseURL = 'https://lshyj1234.xyz:8443/drive'
 // }
 
 const service = axios.create({
-  timeout: 5000
+  timeout: 5000,
+  withCredentials: true
 })
 
 service.interceptors.request.use(config => {

@@ -150,8 +150,9 @@ export default {
       return await this.$router.replace('/home')
     }
     // 加载验证码
-    this.verifyImage = await request.get('https://lshyj1234.xyz/drive/getCode', {
-      responseType: 'blob'
+    this.verifyImage = await request.get('https://lshyj1234.xyz:8443/drive/getCode', {
+      responseType: 'blob',
+      withCredentials: true
     }).then(result => {
       return result
     }).catch(() => {
@@ -190,7 +191,7 @@ export default {
       }
       // axios 请求
       const res = await request.post(
-        '/drive/userLogin',
+        'https://lshyj1234.xyz:8443/drive/userLogin',
         params).then(result => {
         bar.stop()
         return result
@@ -239,7 +240,7 @@ export default {
       this.verifyImage = null
       this.imgUrl = null
       // 加载验证码
-      this.verifyImage = await request.get('https://lshyj1234.xyz/drive/getCode', {
+      this.verifyImage = await request.get('https://lshyj1234.xyz:8443/drive/getCode', {
         responseType: 'blob'
       }).then(result => {
         return result
