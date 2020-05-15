@@ -10,15 +10,14 @@
             Drive v 1.0
           </div>
         </q-toolbar-title>
-        <div class="text-subtitle2">
-          {{user.uname}}
-          <span class="text-italic">Lv. {{user.ugrade}}</span>
+        <div class="text-weight-medium">
+          {{sessionDriveUser.username}}
         </div>
         &nbsp;
         <q-btn dense flat round>
           <q-avatar size="md">
-            <img v-if="user.headImg != null" :src="user.headImg">
-            <q-icon v-else name="person"></q-icon>
+            <q-icon v-if="sessionDriveUser.headImg != null || sessionDriveUser.headImg !== '' || sessionDriveUser.headImg !== undefined" name="person"></q-icon>
+            <img v-else :src="sessionDriveUser.headImg">
           </q-avatar>
           <q-menu fit>
             <q-list>
@@ -289,18 +288,19 @@ export default {
       // 选择框
       checked: new Array(100).fill(false),
       // 用户信息
-      user: {
-        uname: '',
-        upgrade: 0,
-        headImg: ''
+      sessionDriveUser: {
       }
     }
   },
   async mounted () {
     this.checked.fill(false)
-    this.user = this.$store.getters.getUser()
+    // 从store中获取 sessionDriveUser
+    this.sessionDriveUser = this.$store.getters.getSessionDriveUser()
+    console.log('sessionDriveUser.headImg ', this.sessionDriveUser.headImg)
+    // 从store中获取 sessionId
+    this.sessionId = this.$store.getters.getSessionId()
     this.$q.loading.hide()
-    if (!this.$q.sessionStorage.has('sessionId')) {
+    if (!this.sessionId) {
       this.$q.notify({
         message: '请先登录！',
         color: 'red-4',
@@ -312,10 +312,6 @@ export default {
     }
   },
   methods: {
-    add () {
-      console.log('add()')
-      this.$store.commit('increment')
-    },
     onItemClick () {
       console.log('click the item')
     },
@@ -338,7 +334,8 @@ export default {
     async exit () {
       if (this.$q.sessionStorage.getLength() > 0) {
         this.$q.sessionStorage.clear()
-        return await this.$router.replace('/')
+        await this.$router.replace('/')
+        return window.location.reload()
       }
     }
   },

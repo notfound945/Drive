@@ -47,7 +47,7 @@
               <div class="text-subtitle2">
                 喜欢这张壁纸吗?
               </div>
-              <q-btn outline style="color: white;" label="下 载 它" @click="downloadByBlob(originUrl, 'th')" />
+              <q-btn outline style="color: white;" label="保 存" @click="downloadByBlob(originUrl, 'th')" />
             </div>
           </div>
         </div>
@@ -96,11 +96,12 @@ export default {
     // 获取Bing每日一图
     request.get('/getBing/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
       .then(result => {
+        // 原始链接
         this.originUrl = 'https://cn.bing.com' + result.images[0].url
+        // 图片版权描述
         this.imageCopyright = result.images[0].copyright
-        console.log('get result', result)
+        // 样式所用变量
         this.imageUrl = 'url(' + this.originUrl + ')'
-        console.log('origin url ', this.originUrl)
       })
       .catch(error => {
         console.log('error ', error)

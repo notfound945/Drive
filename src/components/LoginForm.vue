@@ -145,7 +145,10 @@ export default {
       this.$set(this, 'prevName', this.$q.cookies.get('userName'))
       this.seamless = true
     }
-    if (this.$q.sessionStorage.has('sessionId')) {
+    // 判断 store 是否存在 sessionId  存在表明已登录 自动跳转
+    const sessionId = this.$store.getters.getSessionId()
+    console.log('mounted ', sessionId)
+    if (sessionId) {
       return await this.$router.replace('/home')
     }
     // 加载验证码
@@ -230,6 +233,7 @@ export default {
             icon: 'sentiment_very_satisfied',
             message: res.message
           })
+          console.log('result get ', res)
           // 加载 Loading
           this.$q.loading.show()
           // Cookies 记录用户名
@@ -241,8 +245,10 @@ export default {
             )
           }
           // const user = res.user
-          // 写入 store
-          this.$store.commit('register', uid())
+          // 写入 随机生成的 sessionId 到 store
+          this.$store.commit('registerSessionId', uid())
+          // 写入当前会话用户信息到 store
+          this.$store.commit('registerSessionDriveUser', res.driveUser)
           // 重定向主界面
           return await this.$router.replace('/home')
         } else {

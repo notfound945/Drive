@@ -25,21 +25,24 @@ export default function (/* { ssrContext } */) {
     },
 
     state: {
-      user: {
-        uname: 'null',
-        headImg: '',
-        ugrade: 0
+      driveUser: {
       },
       sessionId: ''
     },
     mutations: {
-      register (state, sessionId) {
+      registerSessionId (state, sessionId) {
         state.sessionId = sessionId
+      },
+      registerSessionDriveUser (state, driveUser) {
+        state.driveUser = driveUser
       }
     },
     getters: {
-      getUser: (state) => () => {
-        return state.user
+      getSessionId: (state) => () => {
+        return state.sessionId
+      },
+      getSessionDriveUser: (state) => () => {
+        return state.driveUser
       }
     },
     // enable strict mode (adds overhead!)
