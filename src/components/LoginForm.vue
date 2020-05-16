@@ -1,6 +1,6 @@
 <template>
   <div class="q-gutter-xs">
-    <q-card class="col my-card q-pa-xs fixed-right items-center">
+    <q-card class="col my-card q-pa-md fixed-right items-center">
       <div class="title">
         <transition
                 appear

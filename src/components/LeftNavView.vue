@@ -77,6 +77,12 @@ export default {
           navTitle: '百度统计',
           href: 'https://tongji.baidu.com/web/homepage/index',
           style: 'height: 100px; background-color: #ef5350'
+        },
+        {
+          navImg: 'http://ww1.sinaimg.cn/large/007eYQjmgy1geudowbfxzj305k05kwea.jpg',
+          navTitle: '杨中科背单词',
+          href: 'https://bdc.youzack.com/',
+          style: 'height: 100px; background-color: #ef5350'
         }
       ]
     }
