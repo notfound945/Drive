@@ -1,36 +1,21 @@
 <template>
-  <q-layout view="hHh lpR fFf" :style="{backgroundImage: imageUrl, backgroundPosition: 'center', backgroundSize: 'cover'}">
+  <q-layout view="hHh lpR fFf"
+            :style="{backgroundImage: imageUrl, backgroundPosition: 'center', backgroundSize: 'cover'}">
     <q-header elevated class="header bg-primary text-white">
       <q-toolbar>
-        <q-btn v-if="!left" dense flat round icon="menu" @click="left = !left" />
-        <q-btn v-else dense flat round icon="cancel" color="primary" @click="left = !left" />
+        <q-btn v-if="!left" dense flat round icon="menu" @click="left = !left"/>
+        <q-btn v-else dense flat round icon="cancel" color="primary" @click="left = !left"/>
         <q-toolbar-title>
         </q-toolbar-title>
-        <q-btn v-if="!right" dense flat round icon="person" @click="right = !right" />
-        <q-btn v-else dense flat round icon="cancel" color="primary"  @click="right = !right" />
+        <q-btn v-if="!right" dense flat round icon="person" @click="right = !right"/>
+        <q-btn v-else dense flat round icon="cancel" color="primary" @click="right = !right"/>
       </q-toolbar>
     </q-header>
     <q-drawer v-model="left" side="left" :width="400" bordered>
-      <h5 class="text-center">常用导航</h5>
-      <div class="row">
-        <div class="col">
-          <a href="https://www.eec-cn.com/si/student/group" target="_blank">
-            <q-card class="nav-card q-ma-md">
-              <q-img
-                src="https://cdn.quasar.dev/img/parallax2.jpg"
-                basic
-              >
-                <div class="absolute-bottom text-weight-medium text-center" style="height: 30px">
-                  所有课程
-                </div>
-              </q-img>
-            </q-card>
-          </a>
-        </div>
-      </div>
+      <left-nav-view></left-nav-view>
     </q-drawer>
 
-    <q-drawer v-model="right" side="right" :width="1" bordered>
+    <q-drawer v-model="right" side="right" :width="400" bordered>
       <div v-if="right">
         <router-view/>
       </div>
@@ -44,10 +29,10 @@
               {{imageCopyright}}
             </div>
             <div class="q-mt-md items-center justify-between row">
-              <div class="text-subtitle2">
+              <div class="text-grey text-subtitle2">
                 喜欢这张壁纸吗?
               </div>
-              <q-btn outline style="color: white;" label="保 存" @click="downloadByBlob(originUrl, 'th')" />
+              <q-btn flat style="color: gray;" icon="save_alt" @click="downloadByBlob(originUrl, 'th')"/>
             </div>
           </div>
         </div>
@@ -68,11 +53,14 @@
 <script>
 import { date } from 'quasar'
 import request from 'src/axios/request'
+import LeftNavView from 'components/LeftNavView'
 
 export default {
   name: 'MainLayout',
 
-  components: {},
+  components: {
+    LeftNavView
+  },
 
   data () {
     return {
@@ -156,19 +144,16 @@ export default {
     height: 40px
     opacity: 0.7
     -moz-opacity: 0.7
-    /*a 标签去默认样式*/
+  /*a 标签去默认样式*/
   a
     color: white
     text-decoration: none
-    /*图片描述框样式*/
+  /*图片描述框样式*/
   .image-description
     max-height: 300px
-    max-width: 50%
-    background-color: black
-    opacity: 0.4
-    -moz-opacity: 0.4
+    max-width: 60%
+    background: rgba(0, 0, 0, 0.5)
+    /*opacity: 0.4*/
+    /*-moz-opacity: 0.4*/
     color: white
-  /*导航卡片*/
-  .nav-card
-    max-width: 150px
 </style>

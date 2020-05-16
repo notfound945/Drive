@@ -1,8 +1,14 @@
 <template>
   <div class="q-gutter-xs">
-    <q-card class="col my-card q-pa-md fixed-right items-center">
+    <q-card class="col my-card q-pa-xs fixed-right items-center">
       <div class="title">
-        <h5 class="text-center">{{hello}}</h5>
+        <transition
+                appear
+                enter-active-class="animated fadeIn"
+                leave-active-class="animated fadeOut"
+        >
+          <div class="q-mt-md text-h5 text-center" style="height: 50px">{{hello}}</div>
+        </transition>
       </div>
 <!--      <div class="row justify-center absolute-center" style="top: -20px">-->
 <!--        &lt;!&ndash;        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />&ndash;&gt;-->
@@ -283,5 +289,7 @@ export default {
 
 <style lang="sass" scoped>
   .my-card
+    height: 100%
     width: 400px
+    max-width: 400px
 </style>
