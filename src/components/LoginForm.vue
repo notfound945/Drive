@@ -210,9 +210,6 @@ export default {
     async onSubmit () {
       // 复制用户名密码框关闭
       this.seamless = false
-      // this.$axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
-      const bar = this.$refs.bar
-      bar.start()
       // 请求 params 参数
       const params = {
         userid: this.username,
@@ -223,10 +220,8 @@ export default {
       const res = await request.post(
         'https://lshyj1234.xyz:8443/drive/userLogin',
         params).then(result => {
-        bar.stop()
         return result
       }).catch(() => {
-        bar.stop()
       })
       // console.log('get response result: ', res)
       // 验证

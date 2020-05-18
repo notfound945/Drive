@@ -32,7 +32,7 @@
               <div class="text-grey text-subtitle2">
                 喜欢这张壁纸吗?
               </div>
-              <q-btn flat style="color: gray;" icon="save_alt" @click="downloadByBlob(originUrl, 'th')"/>
+              <q-btn flat style="color: gray;" round icon="save_alt" @click="downloadByBlob(originUrl, 'th')"/>
             </div>
           </div>
         </div>
