@@ -80,7 +80,7 @@ export default {
       right: false
     }
   },
-  mounted () {
+  async mounted () {
     // 获取Bing每日一图
     request.get('/getBing/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
       .then(result => {
@@ -108,6 +108,7 @@ export default {
       eleLink.click()
       eleLink.remove()
     },
+    // 转换成 blob
     downloadByBlob (url, name) {
       const image = new Image()
       image.setAttribute('crossOrigin', 'anonymous')
