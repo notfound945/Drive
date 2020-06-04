@@ -87,7 +87,7 @@
                 <div v-for="n in 12" :key="n.index" class="col" style="height: 10px;width: 500px"></div>
             </div>
             <!--            父子组件通信-->
-            <FileView :showTop="showTopOperation" @change="changeShowTopOperation($event)"></FileView>
+            <FileView v-if="refresh === true" ref="demo" :showTop="showTopOperation" @change="changeShowTopOperation($event)"></FileView>
         </q-page-container>
         <!--      上传文件对话框-->
         <q-dialog v-model="bar" persistent transition-show="flip-down" transition-hide="flip-up">
@@ -109,8 +109,12 @@
                                 label="请选择文件（无大小限制）"
                                 multiple
                                 field-name="files"
-                                :factory="upload"
+                                :factory="factoryFn"
                                 with-credentials
+                                @start="startUpload"
+                                @uploaded="upLoaded"
+                                @factory-failed="factoryFailed"
+                                @finish="finishUploaded"
                                 :headers="[{name: 'Access-Control-Allow-Origin', value: '*'}]"
                                 style="max-width: 600px"
                         />
@@ -118,7 +122,7 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="bg-white text-teal">
-                    <q-btn flat label="取  消" v-close-popup/>
+                  <q-btn flat label="取  消" v-close-popup/>
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -140,6 +144,8 @@ export default {
   },
   data () {
     return {
+      // 上传文件完成后自动重载子组件
+      refresh: true,
       // 文件上传弹窗
       bar: false,
       right: false,
@@ -196,6 +202,64 @@ export default {
     }
   },
   methods: {
+    // 开始上传
+    startUpload () {
+      this.$q.notify({
+        position: 'top',
+        color: 'green-3',
+        textColor: 'white',
+        icon: 'access_time',
+        message: '开始上传文件...'
+      })
+    },
+    // 文件上传成功
+    upLoaded (info) {
+      console.log('upLoaded info ', info)
+      const response = JSON.parse(info.xhr.response)
+      if (response.flag) {
+        this.$q.notify({
+          position: 'top',
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_upload',
+          message: response.message
+        })
+      } else {
+        this.$q.notify({
+          position: 'top',
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'cloud_off',
+          message: response.message
+        })
+      }
+    },
+    // 文件上传失败
+    factoryFailed () {
+      this.$q.notify({
+        position: 'top',
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: '未知的错误发生'
+      })
+    },
+    // 所有请求完成
+    finishUploaded (info) {
+      console.log('所有文件上传完成 ', info)
+      this.$q.notify({
+        position: 'top',
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: '所有上传请求完成'
+      })
+      // 重载子组件
+      this.refresh = false
+      this.$nextTick(() => {
+        this.refresh = true
+      })
+    },
     onItemClick () {
       console.log('onItemClick')
     },
@@ -211,17 +275,15 @@ export default {
     changeShowTopOperation (value) {
       this.showTopOperation = value
     },
-    // 文件上传表彰
-    upload (files) {
-      const result = this.factoryFn(files)
-      console.log('upload', result)
-      return result
-    },
     factoryFn (files) {
-      return {
-        url: 'https://www.lshyj1234.xyz:8443/drive/fileOperate/fileUpload',
-        method: 'POST'
-      }
+      return new Promise((resolve) => {
+        // simulating a delay of 2 seconds
+        resolve({
+          url: 'https://www.lshyj1234.xyz:8443/drive/fileOperate/fileUpload',
+          method: 'POST'
+        })
+        console.log('上传成功？？')
+      })
     }
   }
 
