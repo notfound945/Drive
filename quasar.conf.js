@@ -106,12 +106,12 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
       // public: 'https://www.lshyj1234.xyz:8443/drive',
       proxy: {
-        '/drive/userLogin': {
-          target: 'https://www.lshyj1234.xyz/drive/userLogin',
+        '/drive': {
+          target: 'https://www.lshyj1234.xyz/drive/',
           changeOrigin: true,
           ws: true,
           pathRewrite: {
-            '^/drive/userLogin': ''
+            '^/drive/': ''
           }
         },
         '/getBing': {

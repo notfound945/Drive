@@ -78,7 +78,7 @@
                                :label="item.label"></q-btn>
                     </transition>
                 </div>
-                <!--        TODO 可添加搜索框-->
+              <!--        TODO 可添加搜索框-->
             </div>
         </q-header>
         <q-page-container>
@@ -106,8 +106,12 @@
                     <!--            文件上传组件-->
                     <div class="q-pa-md">
                         <q-uploader
-                                :factory="factoryFn"
+                                label="请选择文件（无大小限制）"
                                 multiple
+                                field-name="files"
+                                :factory="upload"
+                                with-credentials
+                                :headers="[{name: 'Access-Control-Allow-Origin', value: '*'}]"
                                 style="max-width: 600px"
                         />
                     </div>
@@ -145,6 +149,8 @@ export default {
       viewMode: 'column',
       // 用户信息
       sessionDriveUser: {},
+      // 用户文件
+      fileList: {},
       // 顶部按钮
       topMenu: [
         {
@@ -176,7 +182,7 @@ export default {
     console.log('sessionDriveUser.headImg ', this.sessionDriveUser.headImg)
     // 从store中获取 sessionId
     this.sessionId = this.$store.getters.getSessionId()
-    this.$q.loading.hide()
+    // 判断是否登录
     if (!this.sessionId) {
       this.$q.notify({
         message: '请先登录！',
@@ -185,6 +191,7 @@ export default {
         position: 'top',
         icon: 'error_outline'
       })
+      this.$q.loading.hide()
       return await this.$router.replace('/')
     }
   },
@@ -205,9 +212,14 @@ export default {
       this.showTopOperation = value
     },
     // 文件上传表彰
+    upload (files) {
+      const result = this.factoryFn(files)
+      console.log('upload', result)
+      return result
+    },
     factoryFn (files) {
       return {
-        url: '/fileUp',
+        url: 'https://www.lshyj1234.xyz:8443/drive/fileOperate/fileUpload',
         method: 'POST'
       }
     }

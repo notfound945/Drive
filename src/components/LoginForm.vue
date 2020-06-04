@@ -158,7 +158,7 @@ export default {
       return await this.$router.replace('/home')
     }
     // 加载验证码
-    this.verifyImage = await request.get('https://lshyj1234.xyz:8443/drive/getCode', {
+    this.verifyImage = await request.get('https://www.lshyj1234.xyz:8443/drive/getCode', {
       responseType: 'blob',
       withCredentials: true
     }).then(result => {
@@ -218,7 +218,7 @@ export default {
       }
       // axios 请求
       const res = await request.post(
-        'https://lshyj1234.xyz:8443/drive/userLogin',
+        'https://www.lshyj1234.xyz:8443/drive/userLogin',
         params).then(result => {
         return result
       }).catch(() => {

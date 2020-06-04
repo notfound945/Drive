@@ -25,9 +25,15 @@ export default function (/* { ssrContext } */) {
     },
 
     state: {
+      // 在线用户
       driveUser: {
+
       },
-      sessionId: ''
+      // 会话id
+      sessionId: '',
+      fileList: {
+
+      }
     },
     mutations: {
       registerSessionId (state, sessionId) {
@@ -35,6 +41,9 @@ export default function (/* { ssrContext } */) {
       },
       registerSessionDriveUser (state, driveUser) {
         state.driveUser = driveUser
+      },
+      registerFileList (state, fileList) {
+        state.fileList = fileList
       }
     },
     getters: {
@@ -43,6 +52,9 @@ export default function (/* { ssrContext } */) {
       },
       getSessionDriveUser: (state) => () => {
         return state.driveUser
+      },
+      getFileList: (state) => () => {
+        return state.fileList
       }
     },
     // enable strict mode (adds overhead!)
