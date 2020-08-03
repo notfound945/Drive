@@ -32,7 +32,8 @@ service.interceptors.request.use(config => {
     // 根据Content-Type转换data格式
     if (contentType) {
       if (contentType.includes('multipart')) { // 类型 'multipart/form-data;'
-        // config.data = data;
+        // config.data = data
+        config.data = qs.stringify(config.data)
       } else if (contentType.includes('json')) { // 类型 'application/json;'
         // 服务器收到的raw body(原始数据) "{name:"nowThen",age:"18"}"（普通字符串）
         config.data = JSON.stringify(config.data)

@@ -13,6 +13,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Home') }
     ]
+  },
+  {
+    path: '/flex',
+    component: () => import('layouts/FlexLayout.vue')
   }
 ]
 

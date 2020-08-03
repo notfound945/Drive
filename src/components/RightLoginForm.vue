@@ -153,7 +153,6 @@ export default {
     }
     // 判断 store 是否存在 sessionId  存在表明已登录 自动跳转
     const sessionId = this.$store.getters.getSessionId()
-    console.log('mounted ', sessionId)
     if (sessionId) {
       return await this.$router.replace('/home')
     }

@@ -27,13 +27,13 @@ module.exports = function (/* ctx */) {
       'material-icons',
       'ionicons-v4',
       // 'mdi-v5',
-      // 'fontawesome-v5',
+      'fontawesome-v5'
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font' // optional, you are not bound to it
+      // 'roboto-font' // optional, you are not bound to it
       // 'material-icons' // optional, you are not bound to it
     ],
 
@@ -51,7 +51,9 @@ module.exports = function (/* ctx */) {
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: 'auto',
 
-      components: [],
+      components: [
+        'QPagination'
+      ],
       directives: [],
 
       // Quasar plugins
