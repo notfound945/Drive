@@ -1,6 +1,7 @@
 
 const routes = [
   {
+    name: 'index',
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
@@ -8,10 +9,12 @@ const routes = [
     ]
   },
   {
-    path: '/home',
+    name: 'user',
+    path: '/user/:id',
     component: () => import('layouts/HomeLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Home') }
+      { path: '', component: () => import('pages/Home') },
+      { path: 'account', component: () => import('pages/AccountCenter') }
     ]
   },
   {

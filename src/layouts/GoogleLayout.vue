@@ -90,7 +90,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn outline color="primary" icon="create_new_folder" label="新建文件夹" @click="createFolder"></q-btn>
+          <q-btn outline color="primary" icon="create_new_folder" label="新建文件夹" @click="createFolderDialog = true"></q-btn>
           <transition
             name="share"
             appear
@@ -160,7 +160,8 @@
     </q-drawer>
 
     <q-page-container>
-      <FileView v-if="refresh === true" ref="demo" :showTop="showTopOperation" @change="changeShowTopOperation($event)"></FileView>
+      <FileView v-if="refresh === true" ref="demo" :showTop="showTopOperation"
+                @change="changeShowTopOperation($event)" @refresh="refreshPage($event)"></FileView>
     </q-page-container>
     <!--      上传文件对话框-->
     <q-dialog v-model="bar" persistent transition-show="flip-down" transition-hide="flip-up">
@@ -181,14 +182,11 @@
             <q-uploader
               label="请选择文件（无大小限制）"
               multiple
-              field-name="files"
               :factory="factoryFn"
-              with-credentials
               @start="startUpload"
               @uploaded="upLoaded"
               @factory-failed="factoryFailed"
               @finish="finishUploaded"
-              :headers="[{name: 'Access-Control-Allow-Origin', value: '*'}]"
               style="max-width: 600px"
             />
           </div>
@@ -199,14 +197,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="prompt" persistent>
+<!--    create folder dialog-->
+    <q-dialog v-model="createFolderDialog" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">New Folder Name</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input dense v-model="folderName" autofocus @keyup.enter="prompt = false"/>
+          <q-input dense v-model="creatFolderName" autofocus @keyup.enter="createFolderDialog = false"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -215,12 +214,33 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="downloadDialog" seamless position="bottom">
+      <q-card style="width: 500px">
+
+        <q-card-section class="col items-center no-wrap">
+          <div class="row justify-between items-center">
+            <div class="text-weight-bold">File downloading...</div>
+            <q-btn flat round icon="close" @click="cancelDownload" v-close-popup>
+              <q-tooltip content-class="bg-accent">Cancel download</q-tooltip>
+            </q-btn>
+          </div>
+          <div class="col q-ma-md">
+            <div class="text-black"> {{ downloadName }} </div>
+            <q-linear-progress :value="percentCompleted" color="blue"/>
+          </div>
+          <q-space/>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
 <script>
 
 import FileView from 'components/FileView'
+import request from 'src/axios/request'
+import download from 'src/axios/download'
+
 export default {
   name: 'GoogleLayout',
   components: {
@@ -228,8 +248,13 @@ export default {
   },
   data () {
     return {
+      host: '',
       // new folder name
-      folderName: 'New Folder',
+      creatFolderName: 'New Folder',
+      // create folder dialog
+      createFolderDialog: false,
+      // download dialog
+      downloadDialog: false,
       // show operation bar
       bar: false,
       // file upload component prompt
@@ -317,21 +342,118 @@ export default {
           label: '移动到',
           icon: 'forward'
         }
-      ]
+      ],
+      percentCompleted: 0,
+      downloadName: '',
+      source: null
     }
   },
   methods: {
-    createFolder () {
+    // create folder by name of you provide
+    async createFolder () {
       this.prompt = true
+      const params = {
+        path: this.folderName
+      }
+      const res = await request.post(
+        // 'https://www.lshyj1234.xyz:8443/drive/fileOperate/createfolder',
+        this.host + '/fileOperate/createfolder',
+        params
+      ).then(result => {
+        return result
+      }).catch(error => {
+        return error
+      })
+      console.log('res ', res)
+      if (!res.flag) {
+        this.$q.notify({
+          position: 'top',
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'cloud_off',
+          message: res.message
+        })
+      } else {
+        this.$q.notify({
+          position: 'top',
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_upload',
+          message: res.message
+        })
+      }
     },
+    // top operation item button show enable
     changeShowTopOperation (value) {
       console.log('changeShowTopOperation ', value)
       this.showTopOperation = value[0]
       this.selectedFile = value[1]
     },
+    refreshPage () {
+      // 重载子组件
+      this.refresh = false
+      this.$nextTick(() => {
+        this.refresh = true
+      })
+    },
     operationItem (index) {
       console.log('operation name ', this.topMenu[index].name)
       console.log('operation object ', this.selectedFile)
+      if (this.topMenu[index].name === 'download') {
+        this.batchDownloadFile()
+      }
+    },
+    async batchDownloadFile () {
+      const cancelToken = download.cancelToken
+      this.source = cancelToken.source()
+      this.downloadDialog = true
+      this.downloadDisabled = true
+      const fileName = 'compressed.rar'
+      this.downloadName = fileName
+      this.$q.notify({
+        position: 'top',
+        color: 'green-3',
+        textColor: 'white',
+        icon: 'info',
+        message: 'File download staring...'
+      })
+      const res = await download.service.post(
+        // 'https://www.lshyj1234.xyz:8443/drive/fileOperate/downloadbyfileid',
+        this.host + '/fileOperate/downloadbyfileid',
+        this.selectedFile,
+        {
+          cancelToken: this.source.token,
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            // const listIndex = this.downloadFileQueue.length - 1
+            this.percentCompleted = (progressEvent.loaded * 10) / progressEvent.total
+            // this.downloadFileQueue[listIndex][1] = (progressEvent.loaded * 10) / progressEvent.total
+          }
+        }
+      ).then(result => {
+        this.$q.notify({
+          position: 'top',
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'check_circle',
+          message: 'File download completed.'
+        })
+        const url = window.URL.createObjectURL(new Blob([result]))
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(url)
+      }).catch((err) => {
+        console.log('err ', err)
+      })
+      this.downloadDisabled = false
+      console.log(res)
+    },
+    cancelDownload () {
+      this.source.cancel('User cancel the download .')
     },
     // 开始上传
     startUpload () {
@@ -385,32 +507,47 @@ export default {
         icon: 'cloud_done',
         message: '所有上传请求完成'
       })
-      // 重载子组件
-      this.refresh = false
-      this.$nextTick(() => {
-        this.refresh = true
-      })
+      this.refreshPage()
     },
     // upload file factory function
     factoryFn (files) {
       return new Promise((resolve) => {
         resolve({
-          url: 'https://www.lshyj1234.xyz:8443/drive/fileOperate/fileUpload',
-          method: 'POST'
+          // url: 'https://www.lshyj1234.xyz:8443/drive/fileOperate/fileupload',
+          url: this.host + '/fileOperate/fileupload',
+          method: 'POST',
+          fieldName: 'files',
+          headers: [
+            {
+              name: 'Access-Control-Allow-Origin',
+              value: '*'
+            }
+          ],
+          withCredentials: true,
+          formFields: [
+            {
+              name: 'path',
+              value: ''
+            },
+            {
+              name: 'files',
+              value: JSON.parse(JSON.stringify(files))
+            }
+          ]
         })
-        console.log('上传成功？？')
       })
     },
     // 注销
     async exit () {
       if (this.$q.sessionStorage.getLength() > 0) {
         this.$q.sessionStorage.clear()
-        await this.$router.replace('/')
+        await this.$router.replace({ name: 'index' })
         return window.location.reload()
       }
     }
   },
   mounted () {
+    this.host = this.$store.getters.getHost()
     // 从store中获取 sessionDriveUser
     this.sessionDriveUser = this.$store.getters.getSessionDriveUser()
     // 从store中获取 sessionId

@@ -3,17 +3,10 @@ import qs from 'qs'
 import { Notify } from 'quasar'
 import _ from 'lodash'
 
-// if (process.env.NODE_ENV === 'development') {
-//   axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
-// } else if (process.env.NODE_ENV === 'debug') {
-//   axios.defaults.baseURL = 'https://www.lshyj1234.xyz/drive'
-// } else if
-// if (process.env.NODE_ENV === 'production') {
-//   axios.defaults.baseURL = 'https://lshyj1234.xyz:8443/drive'
-// }
+const cancelToken = axios.CancelToken
 
 const service = axios.create({
-  timeout: 5000,
+  timeout: 0,
   withCredentials: true
 })
 
@@ -79,12 +72,15 @@ service.interceptors.response.use(
         position: 'top',
         color: 'red-6',
         textColor: 'white',
-        icon: 'signal_cellular_null',
-        message: '响应异常，请检查网络环境！'
+        icon: 'block',
+        message: 'Download file process broken.'
       })
     }
     return Promise.reject(error)
   }
 )
 
-export default service
+export default {
+  service,
+  cancelToken
+}

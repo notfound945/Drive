@@ -25,6 +25,8 @@ export default function (/* { ssrContext } */) {
     },
 
     state: {
+      // Development server api
+      host: 'https://www.lshyj1234.xyz:8443/drive',
       // 在线用户
       driveUser: {
 
@@ -55,6 +57,9 @@ export default function (/* { ssrContext } */) {
       },
       getFileList: (state) => () => {
         return state.fileList
+      },
+      getHost: (state) => () => {
+        return state.host
       }
     },
     // enable strict mode (adds overhead!)

@@ -108,8 +108,8 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
       // public: 'https://www.lshyj1234.xyz:8443/drive',
       proxy: {
-        '/drive': {
-          target: 'https://www.lshyj1234.xyz/drive/',
+        '/drive/': {
+          target: 'https://www.lshyj1234.xyz:8443/drive/',
           changeOrigin: true,
           ws: true,
           pathRewrite: {

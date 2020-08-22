@@ -3,17 +3,17 @@
     <q-card class="col my-card q-pa-md fixed-right items-center">
       <div class="title">
         <transition
-                appear
-                enter-active-class="animated fadeIn"
-                leave-active-class="animated fadeOut"
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
         >
-          <div class="q-mt-md text-h5 text-center" style="height: 50px">{{hello}}</div>
+          <div class="q-mt-md text-h5 text-center" style="height: 50px">{{ hello }}</div>
         </transition>
       </div>
-<!--      <div class="row justify-center absolute-center" style="top: -20px">-->
-<!--        &lt;!&ndash;        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />&ndash;&gt;-->
-<!--        <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>-->
-<!--      </div>-->
+      <!--      <div class="row justify-center absolute-center" style="top: -20px">-->
+      <!--        &lt;!&ndash;        <q-avatar size="100px" font-size="52px" color="teal" text-color="white" icon="network" />&ndash;&gt;-->
+      <!--        <q-avatar class="shadow-3" size="100px" color="primary" text-color="white">Drive</q-avatar>-->
+      <!--      </div>-->
       <q-card-section class="col q-pa-xl items-center">
         <q-form ref="loginForm"
                 @submit="onSubmit"
@@ -94,7 +94,7 @@
       <q-card style="width: 450px">
         <q-card-section class="row items-center no-wrap">
           <q-icon name="help_outline" color="primary" size="md"></q-icon>
-          <div class="q-ma-md text-subtitle1">上次登录用户名 <span class="text-bold">{{prevName}}</span></div>
+          <div class="q-ma-md text-subtitle1">上次登录用户名 <span class="text-bold">{{ prevName }}</span></div>
           <q-btn flat style="color: #FF0080" text-color="primary" label="复  制" @click="copyTo"/>
           <q-btn flat v-close-popup style="color: #FF0080" label="取  消"/>
         </q-card-section>
@@ -122,6 +122,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      host: '',
       // 记录的用户名
       prevName: '',
       // 表单用户名
@@ -142,10 +143,13 @@ export default {
       // 验证码图片地址
       imgUrl: null,
       // 问候语
-      hello: ''
+      hello: '',
+      // user id
+      uid: uid()
     }
   },
   async mounted () {
+    this.host = this.$store.getters.getHost()
     // 页面加载完成 读入 Cookies 中用户名
     if (this.$q.cookies.has('userName')) {
       this.$set(this, 'prevName', this.$q.cookies.get('userName'))
@@ -154,13 +158,16 @@ export default {
     // 判断 store 是否存在 sessionId  存在表明已登录 自动跳转
     const sessionId = this.$store.getters.getSessionId()
     if (sessionId) {
-      return await this.$router.replace('/home')
+      return await this.$router.replace('/user/' + this.uid)
     }
     // 加载验证码
-    this.verifyImage = await request.get('https://www.lshyj1234.xyz:8443/drive/getCode', {
-      responseType: 'blob',
-      withCredentials: true
-    }).then(result => {
+    this.verifyImage = await request.get(
+      // 'https://www.lshyj1234.xyz:8443/drive/getcode',
+      this.host + '/getcode',
+      {
+        responseType: 'blob',
+        withCredentials: true
+      }).then(result => {
       return result
     }).catch(() => {
       return null
@@ -217,7 +224,8 @@ export default {
       }
       // axios 请求
       const res = await request.post(
-        'https://www.lshyj1234.xyz:8443/drive/userLogin',
+        // 'https://www.lshyj1234.xyz:8443/drive/userlogin',
+        this.host + '/userlogin',
         params).then(result => {
         return result
       }).catch(() => {
@@ -246,11 +254,11 @@ export default {
           }
           // const user = res.user
           // 写入 随机生成的 sessionId 到 store
-          this.$store.commit('registerSessionId', uid())
+          this.$store.commit('registerSessionId', this.uid)
           // 写入当前会话用户信息到 store
           this.$store.commit('registerSessionDriveUser', res.driveUser)
           // 重定向主界面
-          return await this.$router.replace('/home')
+          return await this.$router.replace('/user/' + this.uid)
         } else {
           this.$q.notify({
             position: 'top',
@@ -267,9 +275,12 @@ export default {
       this.verifyImage = null
       this.imgUrl = null
       // 加载验证码
-      this.verifyImage = await request.get('https://lshyj1234.xyz:8443/drive/getCode', {
-        responseType: 'blob'
-      }).then(result => {
+      this.verifyImage = await request.get(
+        // 'https://lshyj1234.xyz:8443/drive/getcode',
+        this.host + '/getcode',
+        {
+          responseType: 'blob'
+        }).then(result => {
         return result
       }).catch(() => {
         return null
@@ -282,8 +293,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  .my-card
-    height: 100%
-    width: 400px
-    max-width: 400px
+.my-card
+  height: 100%
+  width: 400px
+  max-width: 400px
 </style>
